@@ -1,3 +1,6 @@
+var globalCurrentFile= 0;
+var globalTotalFile= 0;
+
 var UnityLoader = UnityLoader || {
     Compression: {
         identity: {
@@ -3356,7 +3359,9 @@ var UnityLoader = UnityLoader || {
             } : null
         })
     },
-    downloadFile: function(e, t, i){
+    downloadFile: function(e, t, i){        
+      globalCurrentFile= i;
+      globalTotalFile= e.totalFile;
         return new Promise(function (resolve, reject) {
             var r = t.parameters.objParameters ? new UnityLoader.UnityCache.XMLHttpRequest(t.parameters.objParameters) : new XMLHttpRequest;
             r.open("GET", t.parameters.url+".00"+i),
@@ -3373,9 +3378,9 @@ var UnityLoader = UnityLoader || {
     },
     downloadJobMulti: async function(e, t) {
         var res = null;
-        var allFile = new Uint8Array(e.size);
+        var allFile = new Uint8Array(e.size);        
         for(i = 0; i < e.totalFile; i++){
-            var tmp = await UnityLoader.downloadFile(e, t, i);
+            var tmp = await UnityLoader.downloadFile(e, t, i);            
             var size = e.split_size;
             allFile.set(new Uint8Array(tmp), size*i);
         }

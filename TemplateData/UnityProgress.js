@@ -1,4 +1,5 @@
 const rootPath = 'TemplateData56';
+var lastGlobalCurrentFile= 0;
 
 function UnityProgress(gameInstance, progress) {
   if (!gameInstance.Module) {
@@ -26,9 +27,16 @@ function UnityProgress(gameInstance, progress) {
     gameInstance.container.appendChild(gameInstance.textProgress);
   }
 
-  gameInstance.progress.full.style.width = (100 * progress) + "%";
-  gameInstance.progress.empty.style.width = (100 * (1 - progress)) + "%";
-  gameInstance.textProgress.innerHTML = '' + Math.floor(progress * 100) + '%';
+  if (lastGlobalCurrentFile!= globalCurrentFile) {
+    lastGlobalCurrentFile= globalCurrentFile;
+    progress= 0;
+  }
+  realProgress= progress/globalTotalFile+ globalCurrentFile/ globalTotalFile;  
+  realProgress= realProgress || 0;
+  // console.log("progress", progress, realProgress, globalCurrentFile, globalTotalFile);
+  gameInstance.progress.full.style.width = (100 * realProgress) + "%";
+  gameInstance.progress.empty.style.width = (100 * (1 - realProgress)) + "%";
+  gameInstance.textProgress.innerHTML = '' + Math.floor(realProgress * 100) + '%';
 
   if (progress == 1) {
     // gameInstance.textProgress.innerHTML = 'Running... <img src="' + rootPath + '/gears.gif" class="spinner" />';
